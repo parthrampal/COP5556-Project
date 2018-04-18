@@ -699,7 +699,7 @@ public class CodeGenerator implements ASTVisitor, Opcodes {
 			else if(t1.equals(Type.BOOLEAN))
 			{
 				mv.visitLdcInsn(true);
-				mv.visitJumpInsn(IFEQ, set_true);
+				mv.visitJumpInsn(IF_ICMPEQ, set_true);
 				mv.visitLdcInsn(true);
 			}
 		}
@@ -795,6 +795,21 @@ public class CodeGenerator implements ASTVisitor, Opcodes {
 			throws Exception {
 		pixelSelector.ex.visit(this, arg);
 		pixelSelector.ey.visit(this, arg);
+		if(pixelSelector.ex.getType().equals(Type.FLOAT))
+		{
+			mv.visitInsn(F2D);
+			mv.visitMethodInsn(INVOKESTATIC, "java/lang/Math", "cos", "(D)D", false);
+			mv.visitInsn(D2F);
+			mv.visitInsn(FMUL);
+			mv.visitInsn(F2I);
+			pixelSelector.ex.visit(this, arg);
+			pixelSelector.ey.visit(this, arg);
+			mv.visitInsn(F2D);
+			mv.visitMethodInsn(INVOKESTATIC, "java/lang/Math", "sin", "(D)D", false);
+			mv.visitInsn(D2F);
+			mv.visitInsn(FMUL);
+			mv.visitInsn(F2I);
+		}
 		return null;
 	}
 

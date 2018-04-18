@@ -252,12 +252,23 @@ public class CodeGenTest {
 	@Test
 	public void BinaryExpressionLit3() throws Exception {
 		String prog = "binaryExpressionLit3";
-		String input = prog + "{show (2+14.9)>(14.8+2.1);} ";	
+		String input = prog + "{show (2+14.9)>=(14.8+2.1);} ";	
 		byte[] bytecode = genCode(input);		
 		String[] commandLineArgs = {}; //create command line argument array to initialize params, none in this case		
 		runCode(prog, bytecode, commandLineArgs);	
 		show("Log:\n"+RuntimeLog.globalLog);
-		assertEquals("entering main;false;leaving main;",RuntimeLog.globalLog.toString());
+		assertEquals("entering main;true;leaving main;",RuntimeLog.globalLog.toString());
+	}
+	
+	@Test
+	public void BinaryExpressionLit11() throws Exception {
+		String prog = "binaryExpressionLit11";
+		String input = prog + "{show !false; show !true; show !(true | false); show !(true & false);} ";	
+		byte[] bytecode = genCode(input);		
+		String[] commandLineArgs = {}; //create command line argument array to initialize params, none in this case		
+		runCode(prog, bytecode, commandLineArgs);	
+		show("Log:\n"+RuntimeLog.globalLog);
+		assertEquals("entering main;true;false;false;true;leaving main;",RuntimeLog.globalLog.toString());
 	}
 	
 	@Test
@@ -585,11 +596,12 @@ public class CodeGenTest {
 	@Test
 	public void ImageTest4() throws Exception {
 		String prog = "ImageTest4";
-		String input = prog + "{image i[400,600]; input i from @ 0; image f; f := i; show f;} ";	
+		String input = prog + "{image y[1000,1000]; image copy [1000, 1000]; input y from @ 0; show y; copy := y; show copy;} ";	
 		byte[] bytecode = genCode(input);		
 		String[] commandLineArgs = {"C:\\Users\\wema6001\\Pictures\\Cloud.PNG"}; //create command line argument array to initialize params, none in this case		
 		runCode(prog, bytecode, commandLineArgs);
 		waitForKey();
+		//waitForKey();
 		show("Log:\n"+RuntimeLog.globalLog);
 		assertEquals("entering main;leaving main;",RuntimeLog.globalLog.toString());
 	}
@@ -674,12 +686,12 @@ public class CodeGenTest {
 	@Test
 	public void pixelSelectorTest() throws Exception {
 		String prog = "PixelSelectorTest";
-		String input = prog + "{image i; input i from @ 0; show i[300, 400];} ";	
+		String input = prog + "{image i; input i from @ 0; show i[300.0+0, 0.0*0];} ";	
 		byte[] bytecode = genCode(input);		
 		String[] commandLineArgs = {"C:\\Users\\wema6001\\Pictures\\Cloud.PNG"}; //create command line argument array to initialize params, none in this case		
 		runCode(prog, bytecode, commandLineArgs);	
 		show("Log:\n"+RuntimeLog.globalLog);
-		assertEquals("entering main;-1;leaving main;",RuntimeLog.globalLog.toString());
+		assertEquals("entering main;-263173;leaving main;",RuntimeLog.globalLog.toString());
 	}
 	
 	@Test
